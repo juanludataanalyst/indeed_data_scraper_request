@@ -104,9 +104,27 @@ def get_data_from_indeed(role, location):
                     titles_vjks_urls.add((title, vjk, new_url))
         return list(titles_vjks_urls)
 
-    def get_url(role, location, start):
+    def get_url(position, location, start):
+        # URL base por defecto para 'United States'
         base_url = 'https://www.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14'
-        return base_url.format(role.replace(' ', '+'), location.replace(' ', '+'), start)
+        
+        # Modificar la URL base según el país
+        location_urls = {
+            "spain": 'https://es.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "colombia": 'https://co.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "united kingdom": 'https://uk.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "canada": 'https://ca.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "germany": 'https://de.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "australia": 'https://au.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "singapore": 'https://sg.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14',
+            "india": 'https://in.indeed.com/jobs?q={}&l={}&start={}&sort=date&fromage=14'
+        }
+        
+        # Actualizar la URL base si el país está en el diccionario
+        base_url = location_urls.get(location.lower(), base_url)
+
+        return base_url.format(position.replace(' ', '+'), location.replace(' ', '+'), start)
+
 
     start = 0
     today = date.today().isoformat()
