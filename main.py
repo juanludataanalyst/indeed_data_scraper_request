@@ -1,13 +1,13 @@
 import os
 import random
 import subprocess
+import argparse
 from datetime import date
 from bs4 import BeautifulSoup
 from time import sleep
 
-
 def get_data_from_indeed(role, location):
-    # Lista de User-Agents
+    # List of User-Agents
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36",
@@ -16,58 +16,51 @@ def get_data_from_indeed(role, location):
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Safari/537.36"
     ]
 
-
-
-
     def fetch_and_retry_until_valid(url, user_agent, max_retries=100):
         retries = 0
         while retries < max_retries:
             command = [
-    "curl",
-    "-L",  # Seguir redirecciones
-    "-A", user_agent,  # User-Agent elegido aleatoriamente
-    "--compressed",  # Permitir compresión Gzip
-    "--max-time", "10",  # Tiempo máximo para la solicitud
-    "--cookie", "",  # Enviar una cookie vacía
-    "--cookie-jar", "/dev/null",  # No guardar cookies
-    "-H", "Referer: https://www.indeed.com/",  # Referer para simular navegación
-    "-H", "Accept-Language: en-US,en;q=0.9",  # Idioma aceptado
-    "-H", "Connection: keep-alive",  # Mantener la conexión abierta
-    "--no-keepalive",  # Deshabilitar conexiones persistentes después de la solicitud
-    url  # URL objetivo
-]
-
+                "curl",
+                "-L",  # Follow redirects
+                "-A", user_agent,  # Randomly chosen User-Agent
+                "--compressed",  # Allow Gzip compression
+                "--max-time", "10",  # Maximum time for the request
+                "--cookie", "",  # Send an empty cookie
+                "--cookie-jar", "/dev/null",  # Do not save cookies
+                "-H", "Referer: https://www.indeed.com/",  # Referer to simulate browsing
+                "-H", "Accept-Language: en-US,en;q=0.9",  # Accepted language
+                "-H", "Connection: keep-alive",  # Keep connection open
+                "--no-keepalive",  # Disable persistent connections after the request
+                url  # Target URL
+            ]
 
             try:
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
 
-                
                 if result.returncode == 0:
                     content = result.stdout
 
-                    # Verificar patrones específicos en el contenido
-                      # Verificar el tamaño del contenido
-                    if len(content) < 50240:  # Menos de 50 KB
-                        print("Respuesta demasiado pequeña, posible CAPTCHA. Reintentando...")
+                    if len(content) < 50240:  # Less than 50 KB
+                        print("Response too small, possible CAPTCHA. Retrying...")
                     elif "Just a moment..." in content or "cf_chl_opt" in content:
-                        print("Se detectó un CAPTCHA en la respuesta. Reintentando...")
+                        print("CAPTCHA detected in the response. Retrying...")
                     else:
-                        return content  # HTML válido
+                        return content  # Valid HTML
                 else:
-                    print(f"Error en la solicitud: {result.stderr}")
+                    print(f"Request error: {result.stderr}")
 
             except Exception as e:
                 print(f"Error: {e}")
 
             retries += 1
-            print(f"Reintento {retries}/{max_retries}...")
+            print(f"Retry {retries}/{max_retries}...")
 
-        print("Se alcanzó el máximo de reintentos. No se pudo obtener un HTML válido.")
+        print("Maximum retries reached. Could not fetch valid HTML.")
         return None
 
     def extract(url):
         user_agent = random.choice(user_agents)
-        print(f"Extrayendo datos de: {url}")
+        print(f"Extracting data from: {url}")
         html_content = fetch_and_retry_until_valid(url, user_agent)
 
         if html_content:
@@ -80,7 +73,7 @@ def get_data_from_indeed(role, location):
 
         for title, vjk, url in titles_vjks_urls:
             user_agent = random.choice(user_agents)
-            print(f"Procesando: {title}")
+            print(f"Processing: {title}")
 
             html_content = fetch_and_retry_until_valid(url, user_agent)
 
@@ -91,9 +84,9 @@ def get_data_from_indeed(role, location):
 
                 with open(file_name, "w", encoding="utf-8") as file:
                     file.write(html_content)
-                print(f"HTML válido guardado: {file_name}")
+                print(f"Valid HTML saved: {file_name}")
             else:
-                print(f"No se pudo obtener HTML válido para: {title}")
+                print(f"Could not fetch valid HTML for: {title}")
 
     def transform_and_build_unique_urls(soup, base_url):
         titles_vjks_urls = set()
@@ -101,7 +94,7 @@ def get_data_from_indeed(role, location):
             divs = soup.find_all('div', class_='job_seen_beacon')
             for item in divs:
                 title_element = item.find('h2', class_='jobTitle')
-                title = title_element.text.strip() if title_element else "Título no encontrado"
+                title = title_element.text.strip() if title_element else "Title not found"
 
                 vjk_element = title_element.find('a', {'data-jk': True}) if title_element else None
                 vjk = vjk_element['data-jk'] if vjk_element else None
@@ -122,7 +115,7 @@ def get_data_from_indeed(role, location):
         soup = extract(url)
 
         if not soup:
-            print("No se pudo extraer contenido válido.")
+            print("Could not extract valid content.")
             break
 
         next_page = soup.find('a', {'aria-label': 'Next Page'})
@@ -134,7 +127,13 @@ def get_data_from_indeed(role, location):
             sleep(random.uniform(1, 5))
             start += 10
         else:
-            print("No hay más páginas disponibles.")
+            print("No more pages available.")
             break
 
-get_data_from_indeed("Data Analyst", "United States")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Fetch job data from Indeed.")
+    parser.add_argument("--role", type=str, required=True, help="Job role to search for.")
+    parser.add_argument("--location", type=str, required=True, help="Job location to search for.")
+    args = parser.parse_args()
+
+    get_data_from_indeed(args.role, args.location)
