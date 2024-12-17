@@ -6,6 +6,7 @@ data/
 env
 .Rhistory
 *.zip
+cookie_file.txt
 combine_data.py
 
 # Descarta los ficheros checkpoint de notebooks

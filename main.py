@@ -1,7 +1,9 @@
 import os
 import random
 import subprocess
+from datetime import date
 from bs4 import BeautifulSoup
+from time import sleep
 
 
 def get_data_from_indeed(role, location):
@@ -14,27 +16,40 @@ def get_data_from_indeed(role, location):
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Safari/537.36"
     ]
 
-    def fetch_and_retry_until_valid(url, user_agent, max_retries=50):
+
+
+
+    def fetch_and_retry_until_valid(url, user_agent, max_retries=100):
         retries = 0
         while retries < max_retries:
             command = [
-                "curl",
-                "-L",  # Seguir redirecciones
-                "-A", user_agent,  # User-Agent
-                "-s",  # Descargar en silencio
-                "--compressed",  # Permitir compresión
-                "--max-time", "10",  # Limitar el tiempo de la solicitud
-                url
-            ]
+    "curl",
+    "-L",  # Seguir redirecciones
+    "-A", user_agent,  # User-Agent elegido aleatoriamente
+    "--compressed",  # Permitir compresión Gzip
+    "--max-time", "10",  # Tiempo máximo para la solicitud
+    "--cookie", "",  # Enviar una cookie vacía
+    "--cookie-jar", "/dev/null",  # No guardar cookies
+    "-H", "Referer: https://www.indeed.com/",  # Referer para simular navegación
+    "-H", "Accept-Language: en-US,en;q=0.9",  # Idioma aceptado
+    "-H", "Connection: keep-alive",  # Mantener la conexión abierta
+    "--no-keepalive",  # Deshabilitar conexiones persistentes después de la solicitud
+    url  # URL objetivo
+]
+
 
             try:
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
 
+                
                 if result.returncode == 0:
                     content = result.stdout
 
                     # Verificar patrones específicos en el contenido
-                    if "Just a moment..." in content or "cf_chl_opt" in content:
+                      # Verificar el tamaño del contenido
+                    if len(content) < 50240:  # Menos de 50 KB
+                        print("Respuesta demasiado pequeña, posible CAPTCHA. Reintentando...")
+                    elif "Just a moment..." in content or "cf_chl_opt" in content:
                         print("Se detectó un CAPTCHA en la respuesta. Reintentando...")
                     else:
                         return content  # HTML válido
@@ -60,8 +75,8 @@ def get_data_from_indeed(role, location):
         else:
             return None
 
-    def fetch_and_save_html_with_validation(titles_vjks_urls):
-        os.makedirs("job_pages_validated", exist_ok=True)
+    def fetch_and_save_html_with_validation(titles_vjks_urls, output_dir):
+        os.makedirs(output_dir, exist_ok=True)
 
         for title, vjk, url in titles_vjks_urls:
             user_agent = random.choice(user_agents)
@@ -70,8 +85,9 @@ def get_data_from_indeed(role, location):
             html_content = fetch_and_retry_until_valid(url, user_agent)
 
             if html_content:
+                sleep(random.uniform(1, 5))
                 sanitized_title = title.replace(" ", "_").replace("/", "_")
-                file_name = f"job_pages_validated/{sanitized_title}_{vjk}.html"
+                file_name = f"{output_dir}/{sanitized_title}_{vjk}.html"
 
                 with open(file_name, "w", encoding="utf-8") as file:
                     file.write(html_content)
@@ -100,6 +116,7 @@ def get_data_from_indeed(role, location):
         return base_url.format(role.replace(' ', '+'), location.replace(' ', '+'), start)
 
     start = 0
+    today = date.today().isoformat()
     while True:
         url = get_url(role, location, start)
         soup = extract(url)
@@ -109,10 +126,12 @@ def get_data_from_indeed(role, location):
             break
 
         next_page = soup.find('a', {'aria-label': 'Next Page'})
+        output_dir = f"{today}_{location.replace(' ', '_')}_{role.replace(' ', '_')}_{start}"
         titles_vjks_urls = transform_and_build_unique_urls(soup, url)
-        fetch_and_save_html_with_validation(titles_vjks_urls)
+        fetch_and_save_html_with_validation(titles_vjks_urls, output_dir)
 
         if next_page:
+            sleep(random.uniform(1, 5))
             start += 10
         else:
             print("No hay más páginas disponibles.")
