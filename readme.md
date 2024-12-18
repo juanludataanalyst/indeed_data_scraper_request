@@ -1,6 +1,6 @@
 # 🔧 Indeed Data Scraper
 
-Welcome to the **Indeed Data Scraper**! This Python-based project is designed to scrape job postings from Indeed for specific roles and locations. It collects the HTML of individual job postings and traverses all available pages from the last 14 days.
+Welcome to the **Indeed Data Scraper**! This Python-based project is designed to scrape job postings from Indeed for specific roles and locations using **Requests** and Beautiful Soup and . It collects the HTML of individual job postings and traverses all available pages from the last 14 days, allowing users to extract detailed descriptions and all relevant data from every posting.
 
 ---
 
@@ -20,10 +20,13 @@ The scraper currently supports the following countries:
 
 ## 🔍 Features
 
-- Scrapes job postings for a given role and location.
-- Collects and saves the HTML content of each job.
-- Traverses all available pages until no more results are found.
-- Operates efficiently to scrape up to **2000 job postings** in custom configuration.
+- Developed using **Requests** and **Beautiful Soup** for efficient and reliable web scraping.  
+- Scrapes job postings for a given role and location.  
+- Collects and saves the HTML content of each job posting.  
+- Traverses all available pages until no more results are found.  
+- Extracts job postings from the last **14 days** for relevant and recent data.  
+- With the current setup, it averages scraping **1000 job postings** in 5 hours without being blocked. This number can increase if smaller delays are configured between requests, but risk of being blocked increases.
+
 
 ---
 

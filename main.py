@@ -35,6 +35,7 @@ def get_data_from_indeed(role, location):
             ]
 
             try:
+                sleep(random.uniform(1, 15))
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
 
                 if result.returncode == 0:
