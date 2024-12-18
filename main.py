@@ -5,6 +5,7 @@ import argparse
 from datetime import date
 from bs4 import BeautifulSoup
 from time import sleep
+import re
 
 def get_data_from_indeed(role, location):
     # List of User-Agents
@@ -69,6 +70,11 @@ def get_data_from_indeed(role, location):
         else:
             return None
 
+
+    def sanitize_filename(filename):
+        """Replaces invalid characters in the filename with underscores."""
+        return re.sub(r'[<>:"/\\|?*]', '_', filename)
+
     def fetch_and_save_html_with_validation(titles_vjks_urls, output_dir):
         os.makedirs(output_dir, exist_ok=True)
 
@@ -80,14 +86,19 @@ def get_data_from_indeed(role, location):
 
             if html_content:
                 sleep(random.uniform(1, 5))
-                sanitized_title = title.replace(" ", "_").replace("/", "_")
+                # Cleaning
+                sanitized_title = sanitize_filename(title.replace(" ", "_"))
                 file_name = f"{output_dir}/{sanitized_title}_{vjk}.html"
 
-                with open(file_name, "w", encoding="utf-8") as file:
-                    file.write(html_content)
-                print(f"Valid HTML saved: {file_name}")
+                try:
+                    with open(file_name, "w", encoding="utf-8") as file:
+                        file.write(html_content)
+                    print(f"Valid HTML saved: {file_name}")
+                except OSError as e:
+                    print(f"Error saving file {file_name}: {e}")
             else:
                 print(f"Could not fetch valid HTML for: {title}")
+
 
     def transform_and_build_unique_urls(soup, base_url):
         titles_vjks_urls = set()
@@ -143,7 +154,7 @@ def get_data_from_indeed(role, location):
         fetch_and_save_html_with_validation(titles_vjks_urls, output_dir)
 
         if next_page:
-            sleep(random.uniform(1, 5))
+            sleep(random.uniform(1, 30))
             start += 10
         else:
             print("No more pages available.")

@@ -25,7 +25,7 @@ The scraper currently supports the following countries:
 - Collects and saves the HTML content of each job posting.  
 - Traverses all available pages until no more results are found.  
 - Extracts job postings from the last **14 days** for relevant and recent data.  
-- With the current setup, it averages scraping **1000 job postings** in 5 hours without being blocked. This number can increase if smaller delays are configured between requests, but risk of being blocked increases.
+- With the current setup, it averages scraping **1000 job postings** in 6 hours without being blocked. This number can increase if smaller delays are configured between requests, but risk of being blocked increases.
 
 
 ---
