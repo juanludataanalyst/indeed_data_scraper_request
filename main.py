@@ -36,7 +36,21 @@ def get_data_from_indeed(role, location):
             ]
 
             try:
-                sleep(random.uniform(1, 15))
+                if retries == 0:
+                    sleep(random.uniform(5, 15))
+                elif 1 <= retries <= 2:
+                    sleep(random.uniform(30, 90))  
+                elif 3 <= retries <= 5:
+                    sleep(random.uniform(90, 300))  
+                elif 6 <= retries <= 7:
+                    sleep(random.uniform(300, 600))  
+                elif 8 <= retries <= 10:
+                    sleep(random.uniform(600, 3000))     
+                else:  # retries >= 11
+                    sleep(random.uniform(3000, 6000))
+ 
+
+
                 result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, encoding='utf-8')
 
                 if result.returncode == 0:
@@ -85,7 +99,7 @@ def get_data_from_indeed(role, location):
             html_content = fetch_and_retry_until_valid(url, user_agent)
 
             if html_content:
-                sleep(random.uniform(1, 5))
+                sleep(random.uniform(1, 30))
                 # Cleaning
                 sanitized_title = sanitize_filename(title.replace(" ", "_"))
                 file_name = f"{output_dir}/{sanitized_title}_{vjk}.html"
@@ -154,7 +168,7 @@ def get_data_from_indeed(role, location):
         fetch_and_save_html_with_validation(titles_vjks_urls, output_dir)
 
         if next_page:
-            sleep(random.uniform(1, 30))
+            sleep(random.uniform(60, 300))
             start += 10
         else:
             print("No more pages available.")
