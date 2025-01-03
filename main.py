@@ -189,6 +189,12 @@ def get_data_from_indeed(role, location):
             break
 
         next_page = soup.find('a', {'aria-label': 'Next Page'})
+
+        output_dir = os.path.join("html_data", f"{today}_{location.replace(' ', '_')}_{role.replace(' ', '_')}_{start}")
+
+        # Crear el directorio si no existe
+        os.makedirs(output_dir, exist_ok=True)
+
         output_dir = f"{today}_{location.replace(' ', '_')}_{role.replace(' ', '_')}_{start}"
         titles_vjks_urls = transform_and_build_unique_urls(soup, url)
         fetch_and_save_html_with_validation(titles_vjks_urls, output_dir)
