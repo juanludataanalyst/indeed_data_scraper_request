@@ -5,7 +5,7 @@ import sys
 
 # Definir las posiciones y las ubicaciones
 positions = ["Data Analyst", "Data Engineer"]
-locations = ["Canada","Spain","United States","United Kingdom"]
+locations = ["United Kingdom"]
 
 
 # Recorre los valores de location y llama al script main.py

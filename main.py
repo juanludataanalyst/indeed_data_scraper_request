@@ -8,44 +8,70 @@ from time import sleep
 import re
 
 def get_data_from_indeed(role, location):
+
+
+    user_agents = []
+
+    # Generar 10,000 user agents únicos con variaciones en versiones principales, secundarias y de parches
+    count = 0
+    for major in range(100, 200):  # Versiones principales de Chrome
+        for minor in range(0, 10):  # Subversiones
+            for patch in range(0, 10):  # Parches
+                for build in range(100, 110):  # Variación en el build final
+                    if count >= 10000:
+                        break
+                    user_agents.append(
+                        f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{major}.{minor}.{5735+patch}.{build} Safari/537.36"
+                    )
+                    count += 1
+                if count >= 10000:
+                    break
+            if count >= 10000:
+                break
+        if count >= 10000:
+            break
+
+#print(f"Se generaron {len(user_agents)} user agents únicos.")
+
     # List of User-Agents
-    user_agents = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.49 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.111 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Safari/537.36"
-    ]
+    #user_agents = [
+    #   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.198 Safari/537.36",
+    #  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36",
+    #    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.49 Safari/537.36",
+    #    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.111 Safari/537.36",
+    #    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.77 Safari/537.36"
+    #]
 
     def fetch_and_retry_until_valid(url, user_agent, max_retries=100):
         retries = 0
         while retries < max_retries:
+            
             command = [
-                "curl",
-                "-L",  # Follow redirects
-                "-A", user_agent,  # Randomly chosen User-Agent
-                "--compressed",  # Allow Gzip compression
-                "--max-time", "10",  # Maximum time for the request
-                "--cookie", "",  # Send an empty cookie
-                "--cookie-jar", "/dev/null",  # Do not save cookies
-                "-H", "Referer: https://www.indeed.com/",  # Referer to simulate browsing
-                "-H", "Accept-Language: en-US,en;q=0.9",  # Accepted language
-                "-H", "Connection: keep-alive",  # Keep connection open
-                "--no-keepalive",  # Disable persistent connections after the request
-                url  # Target URL
-            ]
+    "curl",
+    "-L",
+    "-A", user_agent,
+    "--compressed",
+    "--max-time", "10",
+    "--cookie", "",
+    "--cookie-jar", "/dev/null",
+    "-H", "Referer: https://www.indeed.com/",
+    "-H", "Accept-Language: en-US,en;q=0.9",
+    "-H", "Connection: keep-alive",
+    "--no-keepalive",
+    url
+]
 
             try:
                 if retries == 0:
-                    sleep(random.uniform(5, 15))
+                    sleep(random.uniform(1, 5))
                 elif 1 <= retries <= 2:
-                    sleep(random.uniform(30, 90))  
+                    sleep(random.uniform(5, 10))  
                 elif 3 <= retries <= 5:
-                    sleep(random.uniform(90, 300))  
+                    sleep(random.uniform(10, 20))  
                 elif 6 <= retries <= 7:
-                    sleep(random.uniform(300, 600))  
+                    sleep(random.uniform(20, 60))  
                 elif 8 <= retries <= 10:
-                    sleep(random.uniform(600, 3000))     
+                    sleep(random.uniform(60, 3000))     
                 else:  # retries >= 11
                     sleep(random.uniform(3000, 6000))
  
