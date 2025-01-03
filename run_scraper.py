@@ -12,7 +12,7 @@ locations = ["United Kingdom"]
 for location in locations:
     for position in positions:
         #Utilizamos sys.executable por que si lo hacemos solo con python no carga las librerias del entorno virtual
-        command = [sys.executable, "main.py", "--role", position, "--location", location]
+        command = [sys.executable, "get_data_from_indeed.py", "--role", position, "--location", location]
         print(f"Ejecutando: {' '.join(command)}")
         subprocess.run(command)
         sleep(random.uniform(60, 300))
