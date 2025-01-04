@@ -4,6 +4,10 @@ Welcome to the **Indeed Data Scraper**! This Python-based project is designed to
 
 ---
 
+<a href="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV?elements=SgZUe_wcV_ZwW_yYvbWn4A"><br /><img src="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV/preview?elements=SgZUe_wcV_ZwW_yYvbWn4A&type=embed" /></a>
+---
+
+---
 ## 🌎 Supported Countries
 The scraper currently supports the following countries:
 
