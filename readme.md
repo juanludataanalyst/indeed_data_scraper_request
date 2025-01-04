@@ -8,9 +8,6 @@ Python project that automates the process of scraping job postings from Indeed u
 
 <a href="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV?elements=SgZUe_wcV_ZwW_yYvbWn4A"><br /><img src="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV/preview?elements=SgZUe_wcV_ZwW_yYvbWn4A&type=embed" /></a>
 
-<a href="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV?elements=SgZUe_wcV_ZwW_yYvbWn4A"><br />
-<img src="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV/preview?elements=SgZUe_wcV_ZwW_yvbWn4A&type=embed" width="600" height="400" /></a>
-
 ### Step-by-Step Breakdown
 
 #### 
