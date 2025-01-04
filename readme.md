@@ -1,11 +1,42 @@
-# 🔧 Indeed Data Scraper
+#  Indeed Data Scraper
 
 Welcome to the **Indeed Data Scraper**! This Python-based project is designed to scrape job postings from Indeed for specific roles and locations using **Requests** and Beautiful Soup and . It collects the HTML of individual job postings and traverses all available pages from the last 14 days, allowing users to extract detailed descriptions and all relevant data from every posting.
 
 ---
+## 🔧 How scraper works
+
 
 <a href="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV?elements=SgZUe_wcV_ZwW_yYvbWn4A"><br /><img src="https://app.eraser.io/workspace/LONKV7zUZl2Yrf13lIbV/preview?elements=SgZUe_wcV_ZwW_yYvbWn4A&type=embed" /></a>
+
+### Step-by-Step Breakdown
+
+#### 
+
+* Script Execution and Data Retrieval:
+    * The script get_data_for_indeed.py is executed.
+    * This script takes two main arguments: location and role.
+    * For each specified location and role combination, the script iterates through Indeed's search results, starting from page 0.
+    * For each page, the script downloads the corresponding HTML content and saves it to a local directory.
+
+* HTML Download and Storage:
+    *   The downloaded HTML files are stored in a structured directory using a specific naming convention.
+    *   The filename includes the date, location, role, and page number (e.g., 2025_01_04_United_Kingdom_Data_Scientist_0).
+ 
+* Handling CAPTCHAs and Blockages:
+    *   The script is designed to handle potential CAPTCHAs or other blockages that might occur during the scraping process.
+    *   If a CAPTCHA is encountered, the script pauses for a specified duration before retrying the request.
+    *   The pause duration increases progressively with each subsequent attempt, helping to avoid being flagged as a bot.
+    *   This retry mechanism ensures that the script can overcome temporary obstacles and continue collecting data.
+ 
+*  Process Termination:
+    *   The script continues to iterate through pages until it reaches the end of the search results for the given location and role.
+    *   Once all pages have been processed, the script terminates, indicating the completion of the data collection process for that specific combination.
+
+
 ---
+
+## 🔧 How html processing works
+
 
 ---
 ## 🌎 Supported Countries
