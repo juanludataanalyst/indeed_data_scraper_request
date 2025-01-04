@@ -1,4 +1,4 @@
-#  Indeed Data Scraper
+#  Indeed Data Scraper using Request and Beautiful Soup
 
 Python project that automates the process of scraping job postings from Indeed using Requests and Beautiful Soup. Extract job data, including titles, descriptions, and locations, for in-depth analysis
 
