@@ -1,6 +1,6 @@
 #  Indeed Data Scraper
 
-Welcome to the **Indeed Data Scraper**! This Python-based project is designed to scrape job postings from Indeed for specific roles and locations using **Requests** and Beautiful Soup and . It collects the HTML of individual job postings and traverses all available pages from the last 14 days, allowing users to extract detailed descriptions and all relevant data from every posting.
+Python project that automates the process of scraping job postings from Indeed using Requests and Beautiful Soup. Extract job data, including titles, descriptions, and locations, for in-depth analysis
 
 ---
 ## 🔧 How scraper works
@@ -37,6 +37,17 @@ Welcome to the **Indeed Data Scraper**! This Python-based project is designed to
 
 ## 🔧 How html processing works
 
+#### 
+
+* Script process_html.py can be executed.
+  
+    * This script iterates through all the downloaded HTML files in the html_data directory.
+    * For each HTML file, the script parses the content to extract relevant job details for each job posting.
+    * These details typically include: *Title    * Company    * Description   * Salary   * Employment Type
+    * The extracted data for each job posting on a page is then compiled into a JSON object.
+    * A new directory named json_output is created to store the generated JSON files.
+    * Within json_output, a subdirectory is created using a naming convention that incorporates the date, location, and role (e.g., 2025_01_04_United_Kingdom_Data_Scientist).
+    * Each subdirectory in json_output stores a separate JSON file for every page of Indeed search results processed.
 
 ---
 ## 🌎 Supported Countries
@@ -60,7 +71,7 @@ The scraper currently supports the following countries:
 - Collects and saves the HTML content of each job posting.  
 - Traverses all available pages until no more results are found.  
 - Extracts job postings from the last **14 days** for relevant and recent data.  
-- With the current setup, it averages scraping **1000 job postings** in 6 hours without being blocked. This number can increase if smaller delays are configured between requests, but risk of being blocked increases.
+- Design to avoid being blocked. With the current setup, it averages scraping **1000 job postings** in 6 hours. This number can increase if smaller delays are configured between requests, but risk of being blocked increases.
 
 
 ---
